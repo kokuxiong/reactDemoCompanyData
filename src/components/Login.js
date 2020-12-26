@@ -5,6 +5,7 @@ import useCommon from '../hooks/useCommon'
 
 
 /** TODO
+ *      メールアドレスチェック処理
  *      6桁半角英数字のパスワードチェック処理
  * 
  */
