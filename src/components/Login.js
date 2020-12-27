@@ -1,8 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Button, Container, Form, FormGroup, Input, Label, Col, Alert } from 'reactstrap'
+import { Button, CardBlock, Container, Label } from 'reactstrap'
 import useCommon from '../hooks/useCommon'
-
+import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
+import { doCheck6LetterOrNum } from '../services/util'
+// import debounce from 'locash/debounce'
+var debounce = require('lodash.debounce')
+var timeout = null  //accountId利用
+var timeout2 = null //password利用
 
 /** TODO
  *      メールアドレスチェック処理
@@ -17,54 +22,27 @@ export default function Login(props){
     //画面で入力したＩＤとパスワードstate
     const [accountId, setAccountId] = useState('')
     const [password, setPassword] = useState('')
-    //alertを表示するかフラグ
-    const [visible, setVisible] = useState(false) //ＩＤ必須入力フラグ
-    const [visible2, setVisible2] = useState(false) //パスワード必須入力フラグ
-    const [visible3, setVisible3] = useState(false) //ＩＤ　または　パスワード不正フラグ
-    const [visible3sub, setVisible3sub] = useState('') //具体的にＩＤか、それともパスワードが不正かフラグ
     //ログインユーザを検索処理
     const { findLoginuserByAccId } = useCommon(false)
     //navbarで「登録」を表示するようにする
-    props.setNavbarpath('login')
+    // props.setNavbarpath('login')
+    useEffect(() => {
+        props.setNavbarpath('login')
+    },[])
 
     //画面で入力したＩＤを随時stateへ反映
     function updateAccountId(e){
         setAccountId(e.target.value)
-        //画面ＩＤを弄ると、エラーメッセージを消す
-        if(visible){
-            setVisible(false)
-        }
-        //画面ＩＤを弄ると、エラーメッセージを消す
-        if(visible3){
-            setVisible3(false)
-        }
     }
     //画面で入力したパスワードを随時stateへ反映
     function updatePassword(e){
         setPassword(e.target.value)
-        //パスワードを弄ると、エラーメッセージを消す
-        if(visible2){
-            setVisible2(false)
-        }
-        //パスワードを弄ると、エラーメッセージを消す
-        if(visible3){
-            setVisible3(false)
-        }
     }
     //ログイン処理
     function doLogin(){
-        //ＩＤ未入力の場合、エラーメッセージ出す
-        if(!accountId){
-            // console.log("accountID must be inputed")
-            setVisible(true)
-        }
-        //パスワード未入力の場合、エラーメッセージ出す
-        if(!password){
-            // console.log("password must be inputed")
-            setVisible2(true)
-        }
         //ＩＤ、パスワード⇒どちらか未入力の場合、なにもしない
         if(!accountId || !password){
+            alert('入力ミスあり')
             return
         }
         //ログインユーザ情報を検索処理
@@ -76,58 +54,101 @@ export default function Login(props){
                 //社員リストへ遷移
                 history.push('/list')
             }else{
-                // console.log("accountID or password not right")
-                //エラーメッセージ出す
-                setVisible3(true)
                 //state更新
+                alert("パスワード不正です。")
                 props.doLogin(false)
-                //具体的にどっちが間違ってるかを画面へ表示する
-                data.accountId === accountId ? setVisible3sub('pwd') : setVisible3sub('id')
             }
         })
     }
 
+    //async validation use availity reactstrap validation
+    const accountIdDoubleCheck = debounce((value, ctx, input, cb) => {
+        //-------------------------------------------debounce------------------------
+        clearTimeout(timeout)
+        timeout = setTimeout(() => {
+            //ログインユーザ情報を検索処理
+            if(accountId){
+                findLoginuserByAccId(accountId, (data) => {
+                    //
+                    if(data.accountId == accountId){
+                        //エラーの場合、エラーメッセージを返却すると、エラーメッセージのカスタマイズはできる
+                        cb(true)
+                    }else{
+                        //正常の場合、trueを返却する
+                        cb('存在してないＩＤです。')
+                    }
+                })
+            }else{
+                //TODO 异步检查的时候，暂时把必须入力的检查也写在这，是否可以同时使用同步检查，待调查
+                //エラーの場合、エラーメッセージを返却すると、エラーメッセージのカスタマイズはできる
+                cb('ユーザＩＤは必須入力です。')
+            }
+        }, 500)
+        //-------------------------------------------------------------------------------
+    }, 100)
+
+    //async validation use availity reactstrap validation
+    const passwordCheck = debounce((value, ctx, input, cb) => {
+        //-------------------------------------------debounce------------------------
+        clearTimeout(timeout2)
+        timeout2 = setTimeout(() => {
+            //ログインユーザ情報を検索処理
+            if(password){
+                if(doCheck6LetterOrNum(password)){
+                    findLoginuserByAccId(accountId, (data) => {
+                        //
+                        if(data.accountId == accountId){
+                            if(data.password == password){
+                                cb(true)
+                            }else{
+                                cb('パスワード不正')
+                            }
+                        }else{
+                            //正常の場合、trueを返却する
+                            cb('パスワード不正（ユーザＩＤ不正）')
+                        }
+                    })
+                }else{
+                    cb('６桁英数字を入力してください。')
+                }
+                
+            }else{
+                //TODO 异步检查的时候，暂时把必须入力的检查也写在这，是否可以同时使用同步检查，待调查
+                //エラーの場合、エラーメッセージを返却すると、エラーメッセージのカスタマイズはできる
+                cb('パスワードは必須入力です。')
+            }
+        }, 500)
+        //-------------------------------------------------------------------------------
+    }, 100)
+
+    function doActive() {
+        if(accountId && password){
+            return false
+        }else{
+            return true
+        }
+    }
+
     return(
-    <div style={{textAlign:'center'}}>
+    <div>
         <Container>
-            <h5 style={{paddingLeft:'auto',paddingRight:270}}>社員管理システムログイン画面</h5><br/><br/>
-            <Form >
-                <FormGroup row style={{justifyContent: 'center'}}>
-                    <Label for="username" sm={2}>ユーザＩＤ</Label>
-                    <Col sm={4}>
-                        <Input type="text" name="username" id="username" 
-                            onChange={updateAccountId} placeholder="ログインユーザＩＤ"/>
-                    </Col>
-                    <Col sm={4}>
-                        <Alert color="danger" isOpen={visible} style={{height:38,paddingTop:5,paddingBottom:0,marginBottom:0}}>
-                            ログインユーザＩＤは必須入力です。
-                        </Alert>
-                    </Col>
-                </FormGroup> 
-                <FormGroup row style={{justifyContent: 'center'}}>
-                    <Label for="password" sm={2}>パスワード</Label>
-                    <Col sm={4}>
-                        <Input type="password" name="password" id="password" 
-                            onChange={updatePassword} placeholder="パスワード"/>
-                    </Col>
-                    <Col sm={4}>
-                        <Alert color="danger" isOpen={visible2} style={{height:38,paddingTop:5,paddingBottom:0,marginBottom:0}}>
-                            パスワードは必須入力です。
-                        </Alert>
-                    </Col>
-                </FormGroup> 
-                <FormGroup row style={{justifyContent: 'center'}}>
-                    <Col sm={6}>
-                        <Alert color="danger" isOpen={visible3} style={{width:350}}>
-                            {visible3sub == 'id' ? 'ユーザＩＤが存在しません！' : 'パスワードが不正です！'}
-                        </Alert>
-                    </Col>
-                </FormGroup>
-                <br/>
-                <FormGroup style={{justifyContent: 'center'}}>
-                    <Col sm={10}><Button color="primary" onClick={doLogin} >ログイン</Button></Col>
-                </FormGroup>
-            </Form>
+            <h5>社員管理システムログイン画面</h5><br/><br/>
+            <AvForm>
+                {/* TODO userID要检查是否已经存在，所以使用了异步检查，但好像不能同时使用同步检查，比如必须入力，这个待调查 */}
+                <AvField type="text" id="username" name="username" label="ユーザＩＤ"
+                    onChange={updateAccountId} placeholder="パログインユーザＩＤ" validate={{
+                        // required: true,
+                        // required: {value: true, errorMessage: 'ユーザＩＤは必須入力です2。'},
+                        async: accountIdDoubleCheck //★异步验证和同步验证好像不能同时进行，待调查★
+                    }} />
+                <AvField type="password" id="password" name="password" label="パスワード"
+                    onChange={updatePassword} placeholder="パスワード" validate={{
+                        // required: {value: true, errorMessage: 'パスワードは必須入力です。'},
+                        // pattern: {value: '^[a-zA-Z0-9]{6}$', errorMessage: '６桁英数字を入力してください。'}
+                        async: passwordCheck //★异步验证和同步验证好像不能同时进行，待调查★
+                    }} />
+                <Button color="primary" onClick={doLogin} disabled={doActive()} >ログイン</Button>
+            </AvForm>
         </Container>
     </div>
     )

@@ -78,12 +78,17 @@ export default　function useCommon(opt){
     }
 
     //社員番号すでに存在してるかをチェックする
-    function doCheckDoubleEmp(cmpCd, callback) {
-        //実際の検索処理
-        findByCmpCd(cmpCd, (data)=>{
-            //検索結果をcallbackとして返却
-            data.name ? callback(true) : callback(false)
+    function doCheckDoubleEmp(cmpCd) {
+        return new Promise((resolve, reject) => {
+            console.log("doCheckDoubleEmp")
+            //実際の検索処理
+            findByCmpCd(cmpCd, (data)=>{
+                console.log("data.name" + data.name)
+                //検索結果返却
+                data.name ? resolve(true) : resolve(false)
+            })
         })
+        
     }
 
     //ログインユーザのaccountIdにより、ログインユーザを検索する

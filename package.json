@@ -16,6 +16,7 @@
     "i18next-browser-languagedetector": "^6.0.1",
     "i18next-http-backend": "^1.0.21",
     "json-server": "^0.16.3",
+    "lodash.debounce": "^4.0.8",
     "mysql2": "^2.2.5",
     "react": "^17.0.1",
     "react-cookie": "^3.0.4",

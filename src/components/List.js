@@ -77,8 +77,8 @@ export default function List(props){
                             <Input type="text" name="cmpSearch" id="cmpSearch" value={target} onChange={updateTarget}
                                 placeholder="名前を入力してください"/>
                             </Col>
-                            <Button color="primary" sm={2} onClick={() => {props.doSearch(target)}} disabled={target.length > 0 ? '' : 'disabled'}>検索</Button>
-                            <Button color="secondary" sm={2} onClick={doClear} disabled={target.length > 0 ? '' : 'disabled'}>クリア</Button>
+                            <Button color="primary" sm={2} onClick={() => {props.doSearch(target)}} disabled={target.length > 0 ? false : true}>検索</Button>
+                            <Button color="secondary" sm={2} onClick={doClear} disabled={target.length > 0 ? false : true}>クリア</Button>
                         </FormGroup>
                     </Form>
                     {/* <Table striped className="mt-4"> */}

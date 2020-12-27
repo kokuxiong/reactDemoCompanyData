@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Button, Container, Form, FormGroup, Input, Label, Col, Alert } from 'reactstrap'
 import useCommon from '../hooks/useCommon'
@@ -22,7 +22,10 @@ export default function LoginUserRegister(props){
     const { loginUserRegister, findLoginuserByAccId } = useCommon(false)
 
     //navbarで「ログインへ」を表示する
-    props.setNavbarpath('register')
+    // props.setNavbarpath('register')
+    useEffect(() => {
+        props.setNavbarpath('register')
+    },[])
 
     //画面で入力したＩＤを随時stateへ
     function updateAccountId(e){

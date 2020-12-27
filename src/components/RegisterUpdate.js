@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from "react-router-dom"
-import { Button, Container, Form, FormGroup, Input, Label, Alert } from 'reactstrap'
+import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap'
 import useCommon from '../hooks/useCommon'
-import { doCheck6LetterOrNum } from '../services/util'
-
-
-var timeCount = null
-
+import { useForm, Controller } from 'react-hook-form'
 
 /** TODO
  *      名前:中国語、日本語、英語のみ使えます。
@@ -22,17 +18,12 @@ export default function RegisterUpdate(props){
     const [flag, setFlag] = useState(true)// default:新規
     //社員コード
     const [cmpCdInput, setCmpCdInput] = useState('')
-    //社員コードチェックフラグ
-    const [cmpCdInputCheck, setCmpCdInputCheck] = useState(true) //６桁英数字入力するフラグ（必須入力チェック含む）
-    const [cmpCdInputCheck2, setCmpCdInputCheck2] = useState(false) //既に存在しているフラグ
     //名前
     const [name, setName] = useState('')
-    const [nameInputCheck, setNameInputCheck] = useState(true) //必須入力フラグ
     //性別
     const [sexCd, setSexCd] = useState('01') //TODO check
     //生年月日
-    const [birthday, setBirthday] = useState('1990-10-01')
-    const [birthdayInputCheck, setBirthdayInputCheck] = useState(true)　//必須入力フラグ
+    const [birthday, setBirthday] = useState('')
     //国籍
     const [countryCd, setCountryCd] = useState('001') //TODO check
     //hisitory
@@ -44,6 +35,16 @@ export default function RegisterUpdate(props){
 
     //編集の場合の社員情報検索処理と新規登録の場合のＩＤ重複チェック処理
     const { findEmpByCmpCd, doCheckDoubleEmp } = useCommon(false)
+
+    //
+    const { errors, handleSubmit, control, setValue } = useForm({
+        mode: "onSubmit",
+        defaultValues:{
+            cmpCd: '',
+            name: '',
+            birthday: '1990-10-01'
+        }
+    })
 
     //初期化処理
     useEffect(() => {
@@ -58,6 +59,8 @@ export default function RegisterUpdate(props){
                 setSexCd(data.sexCd)
                 setBirthday(data.birthday.slice(0, 10))
                 setCountryCd(data.countryCd)
+                setValue('cmpCd', data.cmpCd)
+                setValue('name', data.name)
             })
         }
         
@@ -65,40 +68,14 @@ export default function RegisterUpdate(props){
 
     //画面で入力した社員コードを随時stateへ反映し、かつチェックする
     function updateCmpCd(e){
+        console.log("update CmpCd " + e.target.value)
         setCmpCdInput(e.target.value) 
-        //e.target.valueを退避する
-        let tempValue = e.target.value
-        //入力ある場合
-        if(tempValue){
-            //-------------------------debounce------------------
-            //カンター処理をクリア
-            clearTimeout(timeCount)
-            //カンター処理再開
-            timeCount = setTimeout(() => {
-                // console.log("time out run")
-                doCheck6LetterOrNum(tempValue) ? setCmpCdInputCheck(true) : setCmpCdInputCheck(false)
-                doCheckDoubleEmp(tempValue, (result) => {
-                    result ? setCmpCdInputCheck2(true) : setCmpCdInputCheck2(false)
-                })
-            }, 500)
-            //-----------------------------------------------------
-        }else{
-            //入力した内容を削除した場合
-            //カンターを削除
-            clearTimeout(timeCount)
-            //エラーメッセージを消す
-            setCmpCdInputCheck(true)
-            setCmpCdInputCheck2(false)
-        }
     }
 
     //画面で入力した社員nameを随時stateへ反映
     function updateName(e){
+        console.log("update name " + e.target.value)
         setName(e.target.value)
-        //nameを弄ると、エラーメッセージを消す
-        if(!nameInputCheck){
-            setNameInputCheck(true)
-        }
     }
 
     //画面で入力した社員sexを随時stateへ反映
@@ -109,39 +86,11 @@ export default function RegisterUpdate(props){
     //画面で入力した社員birthdayを随時stateへ反映
     function updateBirthday(e){
         setBirthday(e.target.value)
-        //birthdayを弄ると、エラーメッセージを消す
-        if(e.target.value){
-            if(!birthdayInputCheck){
-                setBirthdayInputCheck(true)
-            }
-        }else{
-            setBirthdayInputCheck(false)
-        }
-        
     }
 
     //画面で入力した社員国籍を随時stateへ反映
     function updateCountryCd(e){
         setCountryCd(e.target.value)
-    }
-
-    //name必須入力チェック
-    function doCheckName() {
-        name.length > 0 ? setNameInputCheck(true) : setNameInputCheck(false)
-    }
-
-    //確定ボタンを非アクティブにするかチェック
-    function doActive() {
-        //画面で入力した内容は不正の場合、非アクティブにする
-        if(cmpCdInput.length != 6 || name.length < 1 || !birthday){
-            return true
-        }
-        //ＩＤが既に存在している場合、非アクティブにする
-        if(cmpCdInputCheck2){
-            return true
-        }
-        //上記以外はアクティブにする
-        return false
     }
 
     //更新or登録処理
@@ -153,18 +102,29 @@ export default function RegisterUpdate(props){
         tempObj.sexCd = sexCd
         tempObj.birthday = birthday
         tempObj.countryCd = countryCd
+        console.log(name)
         //画面で入力した内容が全部ＯＫの場合、処理を実行
-        if(cmpCdInput.length == 6 && !cmpCdInputCheck2 && name && sexCd && birthday && countryCd){
+        if(cmpCdInput.length == 6 && name && sexCd && birthday && countryCd){
+            console.log("update called")
             //更新処理
             if(cmpCd){
                 props.updateEmpinfo(tempObj, () => {
+                    console.log("update success")
                     history.push('/list') //更新成功⇒社員リスト画面へ遷移
                 })
             }else{ //新規登録処理
-                props.insertEmpinfo(tempObj, () => {
-                    history.push('/list') //登録成功⇒社員リスト画面へ遷移
+                doCheckDoubleEmp(cmpCdInput).then((result) => {
+                    if(!result){
+                        props.insertEmpinfo(tempObj, () => {
+                            history.push('/list') //登録成功⇒社員リスト画面へ遷移
+                        })
+                    }else{
+                        alert("既存ＩＤです")
+                    }
                 })
             }
+        }else{
+            alert("入力ミスある")
         }
     }
 
@@ -172,26 +132,79 @@ export default function RegisterUpdate(props){
         <div style={{paddingLeft:300,paddingRight:300}}>
             <Container>
                 <h5>社員基本情報登録画面</h5><br/>
-                <Form>
+                <Form onSubmit={handleSubmit(doUpdate)}>
                     <FormGroup>
                         <Label for="cmpCd">社員番号</Label>
-                        <Input type="text" name="cmpCd" id="cmpCd" value={cmpCdInput} 
-                            onChange={updateCmpCd}
-                            placeholder="６桁英数字を入力してください" disabled={flag ? '' : 'disabled'}/>
-                        <Alert color="danger" isOpen={!cmpCdInputCheck}>
-                            ６桁英数字を入力してください。
-                        </Alert>
-                        <Alert color="danger" isOpen={cmpCdInputCheck2}>
-                            当該社員ＩＤはすでに存在しています。
-                        </Alert>
+                        {/* React Hook Form优先采用非受控组件和原生的输入组件，第三方受控组件需要使用controller
+                            controller的用法介绍请参照官网 */}
+                        <Controller 
+                            control= {control} //使用useForm时必须，使用FormContext时可选
+                            name='cmpCd' //必须，输入组件唯一的名称
+                            rules={ //与register格式一致的校验规则
+                                {
+                                    required: true,
+                                    maxLength: 6,
+                                    minLength: 6,
+                                    validate: {
+                                        //可写同步校验，可写异步校验
+                                        asyncValidate: async value => { //返回true不触发error，返回false触发error
+                                            if(cmpCd){ //更改时一律不触发该错误
+                                                return true
+                                            }else{
+                                                let result = await doCheckDoubleEmp(value)
+                                                return result === false
+                                            }
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                            //返回React元素并将事件和值附加到组件中的函数
+                            //这很容易与带有非标准属性名称的外部受控组件集成，为子组件提供onChange，onBlur和value属性
+                            //注意 下个版本弃用as了，所以尽量用render不要用as
+                            render={(props) => (
+                                <Input onChange={　
+                                    (value) => {
+                                        props.onChange(value)
+                                        updateCmpCd(value) //自定义onChange事件的写法
+                                    }
+                                }
+                                value={props.value}
+                                placeholder="６桁英数字を入力してください" 
+                                disabled={flag ? false : true}
+                                type='text'
+                                id='cmpCd'
+                                name='cmpCd'
+                            />)
+                            }
+                        />
+                        {errors.cmpCd?.type === "required" && <span style={{color:"red"}}>必須入力です。</span>}
+                        {errors.cmpCd?.type === "maxLength" && <span style={{color:"red"}}>６桁英数字を入力してください。</span>}
+                        {errors.cmpCd?.type === "minLength" && <span style={{color:"red"}}>６桁英数字を入力してください。</span>}
+                        {errors.cmpCd?.type === "asyncValidate" && <span style={{color:"red"}}>既存社員ＩＤです。</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label for="name">名前</Label>
-                        <Input type="text" name="name" id="name" value={name} 
-                            onChange={updateName} onBlur={doCheckName}  placeholder="名前を入力してください"/>
-                        <Alert color="danger" isOpen={!nameInputCheck}>
-                            名前を入力してください。
-                        </Alert>
+                        <Controller 
+                            control= {control}
+                            name='name'
+                            rules={{ required: true }}
+                            render={(props) => (
+                                <Input onChange={
+                                    (value) => {
+                                        props.onChange(value)
+                                        updateName(value)
+                                    }
+                                }
+                                value={props.value}
+                                placeholder="名前を入力してください" 
+                                name='name'
+                                type='text'
+                                id='name'
+                            />)
+                            }
+                        />
+                        {errors.name?.type === "required" && <span style={{color:"red"}}>必須入力です。</span>}
                     </FormGroup>
                     <FormGroup check row>
                         {/* <Label for="">性別</Label> */}
@@ -212,11 +225,27 @@ export default function RegisterUpdate(props){
                     <br/>
                     <FormGroup>
                         <Label for="birthday">生年月日</Label>
-                        <Input type="date" name="birthday" id="birthday" value={birthday} 
-                            onChange={updateBirthday} />
-                        <Alert color="danger" isOpen={!birthdayInputCheck}>
-                            生年月日を選択してください。
-                        </Alert>
+                        {/* <Input type="date" name="birthday" id="birthday" value={birthday} 
+                            onChange={updateBirthday} /> */}
+                        <Controller 
+                            control= {control}
+                            name='birthday'
+                            rules={{ required: true }}
+                            render={(props) => (
+                                <Input onChange={
+                                    (value) => {
+                                        props.onChange(value)
+                                        updateBirthday(value)
+                                    }
+                                }
+                                value={props.value}
+                                name='birthday'
+                                type='date'
+                                id='birthday'
+                            />)
+                            }
+                        />
+                        {errors.birthday?.type === "required" && <span style={{color:"red"}}>必須入力です。</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label for="countryCd">国籍</Label>
@@ -228,7 +257,8 @@ export default function RegisterUpdate(props){
                     </FormGroup>
                     <br/>
                     <FormGroup>
-                        <Button color="primary" onClick={doUpdate} disabled={doActive() ? 'disabled' : ''}>確定</Button>
+                        {/* <Button color="primary" onClick={doUpdate}>確定</Button> */}
+                        <Button color="primary" type="submit">確定</Button>
                         <Button color="secondary" onClick={() => history.push('/list')} >戻る</Button>
                     </FormGroup>
                 </Form>
