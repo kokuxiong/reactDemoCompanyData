@@ -1,50 +1,34 @@
 import { Collapse, Nav, Navbar, NavbarBrand, NavItem, NavLink } from 'reactstrap';
+import { useTranslation } from 'react-i18next';
 
 export default function NavBar(props){
 
-    //navvarで「登録」「ログインへ」を表示する制御
-    let navbarpath = props.navbarpath
+    const { t, i18n } = useTranslation();
 
-    //ログインユーザ新規登録画面へ遷移
-    function gotoRegister() {
-        window.location.href='/loginuserRegister'
-    }
-
-    //ログイン画面へ遷移
-    function gotoLogin() {
-        window.location.href='/'
-    }
+    const changeLanguage = lng => {
+        i18n.changeLanguage(lng);
+    };
 
     return(
-        <Navbar color="dark" dark expand="md">
+        <Navbar color="dark" dark expand="md" style={{height:50}}>
             <NavbarBrand>社員管理システム</NavbarBrand>
-            {!props.login && navbarpath == 'login' &&
+            {/* {props.login && */}
                 <Collapse navbar>
                     <Nav className="ml-auto" navbar>
                         <NavItem>
-                            <NavLink onClick={gotoRegister}>登録</NavLink>
+                            {props.login &&
+                                <NavLink onClick={() => props.doLogin(false)}>ログアウト</NavLink>
+                            }
                         </NavItem>
-                    </Nav>
-                </Collapse>
-            }
-            {!props.login && navbarpath == 'register' &&
-                <Collapse navbar> 
-                    <Nav className="ml-auto" navbar>
                         <NavItem>
-                            <NavLink onClick={gotoLogin}>ログインへ</NavLink>
+                            <NavLink onClick={() => changeLanguage('jp')}>日本語</NavLink>
                         </NavItem>
-                    </Nav>
-                </Collapse>
-            }
-            {props.login &&
-                <Collapse navbar>
-                    <Nav className="ml-auto" navbar>
                         <NavItem>
-                            <NavLink onClick={() => props.doLogin(false)}>ログアウト</NavLink>
+                            <NavLink onClick={() => changeLanguage('ch')}>中文简体</NavLink>
                         </NavItem>
                     </Nav>
                 </Collapse>
-            }
+            {/* } */}
         </Navbar>
     )
 

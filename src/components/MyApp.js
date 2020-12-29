@@ -1,5 +1,5 @@
 import React,{useState} from 'react'
-import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom'
+import {BrowserRouter as Router, Switch, Route, Redirect, NavLink} from 'react-router-dom'
 import NavBar from './NavBar'
 import List from './List'
 import Infomation from './Infomation'
@@ -8,15 +8,16 @@ import Login from './Login'
 import useCommon from '../hooks/useCommon'
 import LoginUserRegister from './LoginUserRegister'
 import Background from '../assets/image/background.jpg';
+import { useTranslation } from 'react-i18next';
 
 export default function MyApp(){
 
     //ログインステータスＳｔａｔｅ
     const [login, setLogin] = useState(false)
-    //navbarで「登録」、「ログインへ」を表示する制御
-    const [navbarpath, setNavbarpath] = useState('login') 
     //社員情報関連
     const { emplist, setEmplist, findAllEmp, insertEmp, updateEmp, deleteEmp } = useCommon()
+
+    const { t, i18n } = useTranslation();
 
     //ログイン処理
     //opt: true->ログイン成功 false->ログイン失敗
@@ -91,13 +92,35 @@ export default function MyApp(){
     //-----------------------------------------------------------------
 
     return(
-        <div style={{ backgroundImage: `url(${Background})`, height:550 }}>
-            <NavBar doLogin={doLogin} login={login} navbarpath={navbarpath}/>
+        <div className="myApp" style={{ backgroundImage: `url(${Background})` }}>
+            <NavBar doLogin={doLogin} login={login}/>
             <Router>
                 <div>
+                    <ul className="myUl">
+                        <li>
+                            {
+                                login ? t('sidebar.login') : <NavLink to="/" disabled>{t('sidebar.login')}</NavLink>
+                            }
+                        </li>
+                        <li>
+                            {
+                                login ? t('sidebar.register') : <NavLink to="/loginuserRegister">{t('sidebar.register')}</NavLink>
+                            }
+                        </li>
+                        <li>
+                            {
+                                login ? <NavLink to="/list">{t('sidebar.empinfos')}</NavLink> : t('sidebar.empinfos')
+                            }
+                        </li>
+                        <li>
+                            {
+                                login ? <NavLink to="/registerUpdate">{t('sidebar.create')}</NavLink> : t('sidebar.create')
+                            }
+                        </li>
+                    </ul>
                     <Switch>
-                            <Route exact path="/"><Login setNavbarpath={setNavbarpath} doLogin={doLogin}/></Route>
-                            <Route exact path="/loginuserRegister"><LoginUserRegister setNavbarpath={setNavbarpath}/></Route>
+                            <Route exact path="/"><Login doLogin={doLogin}/></Route>
+                            <Route exact path="/loginuserRegister"><LoginUserRegister /></Route>
                             <Route path="/list">
                                 {login ? <List doSearch={doSearch} emplist={emplist} deleteEmpinfo={deleteEmpinfo}/> : (
                                     <Redirect to={{

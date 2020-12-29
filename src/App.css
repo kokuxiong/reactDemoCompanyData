@@ -36,7 +36,34 @@
       transform: rotate(360deg);
     }
   }
-  
+
   .container, .container-fluid {
-    margin-top: 20px;
-  } 
+    /* margin-top: 20px; */
+    /* margin-left: 200px;
+    margin-right: auto; */
+    float: left;
+    /* padding-left: 200px; */
+    /* display: inline-block; */
+    height: calc(700px - 50px);
+    }
+
+    li {
+      padding: 20px;
+    }
+
+    li.nav-item {
+      padding: 0;
+      height: 50px;
+    }
+
+    ul.myUl {
+      width: 200px;
+      height: calc(700px - 50px);
+      float: left;
+      background-color: #343A40;
+      list-style: none;
+    }
+
+    .myApp {
+      height: 700px;
+  }

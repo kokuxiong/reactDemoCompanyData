@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from "react-router-dom"
-import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap'
+import { Button, Container, Form, FormGroup, Input, Label, Col } from 'reactstrap'
 import useCommon from '../hooks/useCommon'
 import { useForm, Controller } from 'react-hook-form'
 
@@ -129,7 +129,7 @@ export default function RegisterUpdate(props){
     }
 
     return(
-        <div style={{paddingLeft:300,paddingRight:300}}>
+        <div style={{paddingLeft:400,paddingRight:300}}>
             <Container>
                 <h5>社員基本情報登録画面</h5><br/>
                 <Form onSubmit={handleSubmit(doUpdate)}>

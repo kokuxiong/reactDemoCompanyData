@@ -1,0 +1,24 @@
+{
+  "login": {
+    "title": "社员管理系统登录页面",
+    "id": "用户ＩＤ",
+    "id-placeholder": "请输入用户ＩＤ",
+    "password": "用户密码",
+    "password-placeholder": "请输入密码",
+    "login": "登录"
+  },
+  "register": {
+    "title": "系统管理员注册页面",
+    "id": "新用户ＩＤ",
+    "id-placeholder": "请输入用户ＩＤ",
+    "password": "新用户密码",
+    "password-placeholder": "请输入密码",
+    "login": "注册"
+  },
+  "sidebar": {
+    "login": "登录",
+    "register": "注册",
+    "empinfos": "社员一览",
+    "create": "登录新社员"
+  }
+}

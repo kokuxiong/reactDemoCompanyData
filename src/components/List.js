@@ -65,7 +65,8 @@ export default function List(props){
 
     return (
             <div>
-                <Container className="themed-container" fluid>
+                {/* <Container className="themed-container" fluid> */}
+                <Container>
                     <div className="float-right">
                         <Button color="success" onClick={() => history.push('/registerUpdate/')}>新規社員登録</Button>
                     </div>

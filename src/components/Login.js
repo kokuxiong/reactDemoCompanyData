@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Button, CardBlock, Container, Label } from 'reactstrap'
+import { Button, Container } from 'reactstrap'
 import useCommon from '../hooks/useCommon'
-import { AvForm, AvField, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
+import { AvForm, AvField,} from 'availity-reactstrap-validation';
 import { doCheck6LetterOrNum } from '../services/util'
+import { useTranslation, withTranslation, Trans } from 'react-i18next';
 // import debounce from 'locash/debounce'
 var debounce = require('lodash.debounce')
 var timeout = null  //accountId利用
@@ -24,11 +25,8 @@ export default function Login(props){
     const [password, setPassword] = useState('')
     //ログインユーザを検索処理
     const { findLoginuserByAccId } = useCommon(false)
-    //navbarで「登録」を表示するようにする
-    // props.setNavbarpath('login')
-    useEffect(() => {
-        props.setNavbarpath('login')
-    },[])
+
+    const { t, i18n } = useTranslation();
 
     //画面で入力したＩＤを随時stateへ反映
     function updateAccountId(e){
@@ -131,23 +129,24 @@ export default function Login(props){
 
     return(
     <div>
-        <Container>
-            <h5>社員管理システムログイン画面</h5><br/><br/>
+        <Container style={{paddingLeft:280,paddingRight:220}}>
+            {/* <h5>社員管理システムログイン画面</h5><br/><br/> */}
+            <h5>{t('login.title')}</h5><br/><br/>
             <AvForm>
                 {/* TODO userID要检查是否已经存在，所以使用了异步检查，但好像不能同时使用同步检查，比如必须入力，这个待调查 */}
-                <AvField type="text" id="username" name="username" label="ユーザＩＤ"
-                    onChange={updateAccountId} placeholder="パログインユーザＩＤ" validate={{
+                <AvField type="text" id="username" name="username" label={t('login.id')}
+                    onChange={updateAccountId} placeholder={t('login.id-placeholder')} validate={{
                         // required: true,
                         // required: {value: true, errorMessage: 'ユーザＩＤは必須入力です2。'},
                         async: accountIdDoubleCheck //★异步验证和同步验证好像不能同时进行，待调查★
                     }} />
-                <AvField type="password" id="password" name="password" label="パスワード"
-                    onChange={updatePassword} placeholder="パスワード" validate={{
+                <AvField type="password" id="password" name="password" label={t('login.password')}
+                    onChange={updatePassword} placeholder={t('login.password-placeholder')} validate={{
                         // required: {value: true, errorMessage: 'パスワードは必須入力です。'},
                         // pattern: {value: '^[a-zA-Z0-9]{6}$', errorMessage: '６桁英数字を入力してください。'}
                         async: passwordCheck //★异步验证和同步验证好像不能同时进行，待调查★
                     }} />
-                <Button color="primary" onClick={doLogin} disabled={doActive()} >ログイン</Button>
+                <Button color="primary" onClick={doLogin} disabled={doActive()} >{t('login.login')}</Button>
             </AvForm>
         </Container>
     </div>

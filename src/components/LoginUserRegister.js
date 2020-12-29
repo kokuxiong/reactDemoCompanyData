@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Button, Container, Form, FormGroup, Input, Label, Col, Alert } from 'reactstrap'
 import useCommon from '../hooks/useCommon'
 import { doCheck6LetterOrNum } from '../services/util'
+import { useTranslation } from 'react-i18next';
 
 export default function LoginUserRegister(props){
 
@@ -21,11 +22,7 @@ export default function LoginUserRegister(props){
     //ログインユーザ登録処理と検索処理
     const { loginUserRegister, findLoginuserByAccId } = useCommon(false)
 
-    //navbarで「ログインへ」を表示する
-    // props.setNavbarpath('register')
-    useEffect(() => {
-        props.setNavbarpath('register')
-    },[])
+    const { t, i18n } = useTranslation();
 
     //画面で入力したＩＤを随時stateへ
     function updateAccountId(e){
@@ -111,13 +108,13 @@ export default function LoginUserRegister(props){
     return(
     <div style={{textAlign:'center'}}>
         <Container>
-            <h5 style={{paddingLeft:'auto',paddingRight:270}}>ログインユーザ登録画面</h5><br/><br/>
+            <h5 style={{paddingLeft:'auto',paddingRight:270}}>{t('register.title')}</h5><br/><br/>
             <Form >
                 <FormGroup row style={{justifyContent: 'center'}}>
-                    <Label for="username" sm={2}>ユーザＩＤ</Label>
+                    <Label for="username" sm={2}>{t('register.id')}</Label>
                     <Col sm={4}>
                         <Input type="text" name="username" id="username" 
-                            onChange={updateAccountId} placeholder="ログインユーザＩＤ"/>
+                            onChange={updateAccountId} placeholder={t('register.id-placeholder')}/>
                     </Col>
                     <Col sm={4}>
                         <Alert color="danger" isOpen={visible} style={{height:38,paddingTop:5,paddingBottom:0,marginBottom:0}}>
@@ -126,10 +123,10 @@ export default function LoginUserRegister(props){
                     </Col>
                 </FormGroup>
                 <FormGroup row style={{justifyContent: 'center'}}>
-                    <Label for="password" sm={2}>パスワード</Label>
+                    <Label for="password" sm={2}>{t('register.password')}</Label>
                     <Col sm={4}>
                         <Input type="password" name="password" id="password" 
-                            onChange={updatePassword} placeholder="パスワード"/>
+                            onChange={updatePassword} placeholder={t('register.password-placeholder')}/>
                     </Col>
                     <Col sm={4}>
                         <Alert color="danger" isOpen={visible2} style={{height:38,paddingTop:5,paddingBottom:0,marginBottom:0}}>
@@ -149,7 +146,7 @@ export default function LoginUserRegister(props){
                 </FormGroup> 
                 <br/>
                 <FormGroup style={{justifyContent: 'center'}}>
-                    <Col sm={10}><Button color="primary" onClick={doRegister} >登録</Button></Col>
+                    <Col sm={10}><Button color="primary" onClick={doRegister} >{t('register.login')}</Button></Col>
                 </FormGroup>
             </Form>
         </Container>

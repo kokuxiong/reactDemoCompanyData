@@ -1,0 +1,24 @@
+{
+  "login": {
+    "title": "社員管理システムログイン画面",
+    "id": "ユーザＩＤ",
+    "id-placeholder": "ユーザＩＤを入力してください",
+    "password": "パスワード",
+    "password-placeholder": "パスワードを入力してください",
+    "login": "ログイン"
+  },
+  "register": {
+    "title": "ログインユーザ登録画面",
+    "id": "ユーザＩＤ",
+    "id-placeholder": "ユーザＩＤを入力してください",
+    "password": "パスワード",
+    "password-placeholder": "パスワードを入力してください",
+    "login": "登録"
+  },
+  "sidebar": {
+    "login": "ログイン",
+    "register": "登録",
+    "empinfos": "社員一覧",
+    "create": "新規社員"
+  }
+}
