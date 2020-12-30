@@ -4,15 +4,14 @@ import { Button, Container } from 'reactstrap'
 import useCommon from '../hooks/useCommon'
 import { AvForm, AvField,} from 'availity-reactstrap-validation';
 import { doCheck6LetterOrNum } from '../services/util'
-import { useTranslation, withTranslation, Trans } from 'react-i18next';
-// import debounce from 'locash/debounce'
+import { useTranslation } from 'react-i18next';
+
 var debounce = require('lodash.debounce')
 var timeout = null  //accountId利用
 var timeout2 = null //password利用
 
 /** TODO
- *      メールアドレスチェック処理
- *      6桁半角英数字のパスワードチェック処理
+ *      メールアドレスチェック処理(ログインＩＤをメールのみにしたくないので、一旦保留)
  * 
  */
 
@@ -25,7 +24,7 @@ export default function Login(props){
     const [password, setPassword] = useState('')
     //ログインユーザを検索処理
     const { findLoginuserByAccId } = useCommon(false)
-
+    //i18n処理
     const { t, i18n } = useTranslation();
 
     //画面で入力したＩＤを随時stateへ反映
@@ -66,13 +65,14 @@ export default function Login(props){
         timeout = setTimeout(() => {
             //ログインユーザ情報を検索処理
             if(accountId){
+                //TODO email check
+                //ログインユーザ情報を検索処理
                 findLoginuserByAccId(accountId, (data) => {
-                    //
+                    //正常の場合、trueを返却する
                     if(data.accountId == accountId){
-                        //エラーの場合、エラーメッセージを返却すると、エラーメッセージのカスタマイズはできる
                         cb(true)
                     }else{
-                        //正常の場合、trueを返却する
+                        //ユーザＩＤ存在しない場合、エラーメッセージを返却すると、エラーメッセージのカスタマイズはできる
                         cb(t('login.user-error-noacc'))
                     }
                 })
@@ -92,21 +92,26 @@ export default function Login(props){
         timeout2 = setTimeout(() => {
             //ログインユーザ情報を検索処理
             if(password){
+                //６桁英数字チェック
                 if(doCheck6LetterOrNum(password)){
+                    //パスワード是非チェック
                     findLoginuserByAccId(accountId, (data) => {
-                        //
+                        //ユーザＩＤ存在している場合
                         if(data.accountId == accountId){
+                            //正常の場合、trueを返却する
                             if(data.password == password){
                                 cb(true)
                             }else{
+                                //ユーザＩＤ存在、かつパスワード不正
                                 cb(t('login.password-error-noright'))
                             }
                         }else{
-                            //正常の場合、trueを返却する
+                            //ユーザＩＤ存在してない場合、エラーメッセージを返却
                             cb(t('login.password-error-nouser'))
                         }
                     })
                 }else{
+                    //６桁英数字以外の場合、エラーメッセージを返却
                     cb(t('login.password-error-6char'))
                 }
                 
@@ -119,7 +124,9 @@ export default function Login(props){
         //-------------------------------------------------------------------------------
     }, 100)
 
+    //確定ボタンアクティブチェック
     function doActive() {
+        //どちらか未入力の場合、非アクティブにする、それ以外はアクティブにする
         if(accountId && password){
             return false
         }else{
@@ -133,7 +140,7 @@ export default function Login(props){
             {/* <h5>社員管理システムログイン画面</h5><br/><br/> */}
             <h5>{t('login.title')}</h5><br/><br/>
             <AvForm>
-                {/* TODO userID要检查是否已经存在，所以使用了异步检查，但好像不能同时使用同步检查，比如必须入力，这个待调查 */}
+                {/* TODO userID要检查是否存在，所以使用了异步检查，但好像不能同时使用同步检查，比如必须入力，这个待调查 */}
                 <AvField type="text" id="username" name="username" label={t('login.id')}
                     onChange={updateAccountId} placeholder={t('login.id-placeholder')} validate={{
                         // required: true,

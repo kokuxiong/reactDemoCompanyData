@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory, useParams } from "react-router-dom"
-import { Button, Col, Container, Form, FormGroup, Input, Label, Row } from 'reactstrap'
+import { Button, Col, Container, Form, FormGroup, Input, Label } from 'reactstrap'
 import useCommon from '../hooks/useCommon'
 import { getCountryName } from '../services/util'
-import { useTranslation, withTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 export default function Infomation(){
 
@@ -19,8 +19,8 @@ export default function Infomation(){
     let { cmpCd } = useParams()
     //社員コードにより社員情報検索処理を取得
     const { findEmpByCmpCd } = useCommon(false)
-
-    const { t, i18n } = useTranslation();
+    //i18n処理
+    const { t } = useTranslation();
 
     //初期化処理
     useEffect(() => {

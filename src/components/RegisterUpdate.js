@@ -4,12 +4,14 @@ import { Button, Container, Form, FormGroup, Input, Label, Col } from 'reactstra
 import useCommon from '../hooks/useCommon'
 import { useForm, Controller } from 'react-hook-form'
 import { useTranslation, withTranslation, Trans } from 'react-i18next';
+import { findAllCountry } from '../services/countryDAO'
 
 /** TODO
  *      名前:中国語、日本語、英語のみ使えます。
- *      性別:必須選択のこと エラーメッセージ出す
- *      国籍:必須選択のこと エラーメッセージ出す
+ *      性別:必須選択のこと エラーメッセージ出す(画面に未入力は不可能のため、一旦放置　※普通は)
+ *      国籍:必須選択のこと エラーメッセージ出す(画面に未入力は不可能のため、一旦放置　※普通は)
  *      データベースの操作が失敗する場合は、画面に「ＳＱＬ実行例外が発生しました。」のメッセージを表示する。
+ *      ※普通は失敗することはないので、一旦放置
  */
 
 export default function RegisterUpdate(props){
@@ -27,10 +29,12 @@ export default function RegisterUpdate(props){
     const [birthday, setBirthday] = useState('')
     //国籍
     const [countryCd, setCountryCd] = useState('001') //TODO check
+    //国籍マスタ
+    const [countries, setCountries] = useState([])
     //hisitory
     const history = useHistory()
-
-    const { t, i18n } = useTranslation();
+    //i18n処理
+    const { t } = useTranslation();
 
     //編集の場合、パスパラメータからcmpCdを取得
     let params = useParams()
@@ -39,7 +43,7 @@ export default function RegisterUpdate(props){
     //編集の場合の社員情報検索処理と新規登録の場合のＩＤ重複チェック処理
     const { findEmpByCmpCd, doCheckDoubleEmp } = useCommon(false)
 
-    //
+    //react hook form
     const { errors, handleSubmit, control, setValue } = useForm({
         mode: "onSubmit",
         defaultValues:{
@@ -51,6 +55,9 @@ export default function RegisterUpdate(props){
 
     //初期化処理
     useEffect(() => {
+        findAllCountry((data) => {
+            setCountries(data)
+        })
         //編集の場合、当該社員情報を検索
         if(cmpCd){
             //フラグを編集にする
@@ -62,22 +69,26 @@ export default function RegisterUpdate(props){
                 setSexCd(data.sexCd)
                 setBirthday(data.birthday.slice(0, 10))
                 setCountryCd(data.countryCd)
+                //setValueを使って、項目の初期値を再設定
                 setValue('cmpCd', data.cmpCd)
                 setValue('name', data.name)
+                setValue('birthday',data.birthday.slice(0, 10))
             })
+        }else{
+            setBirthday('1990-10-01')
         }
         
     },[])
 
     //画面で入力した社員コードを随時stateへ反映し、かつチェックする
     function updateCmpCd(e){
-        console.log("update CmpCd " + e.target.value)
+        // console.log("update CmpCd " + e.target.value)
         setCmpCdInput(e.target.value) 
     }
 
     //画面で入力した社員nameを随時stateへ反映
     function updateName(e){
-        console.log("update name " + e.target.value)
+        // console.log("update name " + e.target.value)
         setName(e.target.value)
     }
 
@@ -105,7 +116,7 @@ export default function RegisterUpdate(props){
         tempObj.sexCd = sexCd
         tempObj.birthday = birthday
         tempObj.countryCd = countryCd
-        console.log(name)
+        // console.log(name)
         //画面で入力した内容が全部ＯＫの場合、処理を実行
         if(cmpCdInput.length == 6 && name && sexCd && birthday && countryCd){
             console.log("update called")
@@ -127,6 +138,11 @@ export default function RegisterUpdate(props){
                 })
             }
         }else{
+            console.log(cmpCdInput)
+            console.log(name)
+            console.log(sexCd)
+            console.log(birthday)
+            console.log(countryCd)
             alert("入力ミスある")
         }
     }
@@ -253,9 +269,12 @@ export default function RegisterUpdate(props){
                     <FormGroup>
                         <Label for="countryCd">{t('list.thead.country')}</Label>
                         <Input type="select" name="countryCd" id="countryCd" value={countryCd} onChange={updateCountryCd}>
-                            <option value="001">中国</option>
+                            {/* <option value="001">中国</option>
                             <option value="002">日本</option>
-                            <option value="003">韓国</option>
+                            <option value="003">韓国</option> */}
+                            {countries.map((e) => {
+                                return <option value={e.countryCd}>{e.countryName}</option>
+                            })}
                         </Input>
                     </FormGroup>
                     <br/>

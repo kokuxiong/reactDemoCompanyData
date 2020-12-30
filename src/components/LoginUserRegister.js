@@ -5,6 +5,9 @@ import useCommon from '../hooks/useCommon'
 import { doCheck6LetterOrNum } from '../services/util'
 import { useTranslation } from 'react-i18next';
 
+/**
+ * 当該画面のチェック処理は手動で実現している。勉強になるため、一旦このままにする。
+ */
 export default function LoginUserRegister(props){
 
     //historyを利用し画面遷移する
@@ -21,8 +24,8 @@ export default function LoginUserRegister(props){
     const [time3, setTime3] = useState(3) //登録成功の場合、3秒後画面をログインへ遷移する
     //ログインユーザ登録処理と検索処理
     const { loginUserRegister, findLoginuserByAccId } = useCommon(false)
-
-    const { t, i18n } = useTranslation();
+    //i18n処理
+    const { t } = useTranslation();
 
     //画面で入力したＩＤを随時stateへ
     function updateAccountId(e){

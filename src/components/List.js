@@ -2,12 +2,7 @@ import React, { useState } from 'react'
 import { Button, ButtonGroup, Container, Table, NavLink, Form, FormGroup, Input, Label, Col, Badge  } from 'reactstrap'
 import { useHistory } from 'react-router-dom'
 import { getCountryName } from '../services/util'
-import { useTranslation, withTranslation, Trans } from 'react-i18next';
-
-/** TODO
- *      社員情報削除確認画面に遷移する　※社員情報削除確認画面基本設計がない？
- *      「メニュー画面」ボタン　※画面にない？
- */
+import { useTranslation } from 'react-i18next';
 
 export default function List(props){
 
@@ -17,8 +12,8 @@ export default function List(props){
     const history = useHistory()
     //すべての社員情報をpropsから取得
     let empinfos = props.emplist
-
-    const { t, i18n } = useTranslation();
+    //i18n処理
+    const { t } = useTranslation();
 
     //検索バーで入力した内容を随時stateへ更新
     function updateTarget(e) { 

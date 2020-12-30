@@ -48,20 +48,34 @@
     }
 
     li {
-      padding: 20px;
+      padding: 0px;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
     }
 
     li.nav-item {
       padding: 0;
       height: 50px;
+      line-height: 35px;
+    }
+
+    li a {
+      color: black;
+    }
+
+    li a.active {
+      color: blue;
+      /* background-color: pink; */
     }
 
     ul.myUl {
-      width: 200px;
+      width: 120px;
       height: calc(700px - 50px);
       float: left;
       background-color: #343A40;
       list-style: none;
+      padding-inline-start: 0px;
     }
 
     .myApp {

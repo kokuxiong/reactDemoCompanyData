@@ -10,14 +10,18 @@ import LoginUserRegister from './LoginUserRegister'
 import Background from '../assets/image/background.jpg';
 import { useTranslation } from 'react-i18next';
 
+/**
+ * TODO 
+ *      ログイン判定はセッションを利用
+ */
 export default function MyApp(){
 
     //ログインステータスＳｔａｔｅ
     const [login, setLogin] = useState(false)
     //社員情報関連
     const { emplist, setEmplist, findAllEmp, insertEmp, updateEmp, deleteEmp } = useCommon()
-
-    const { t, i18n } = useTranslation();
+    //i18n処理
+    const { t } = useTranslation();
 
     //ログイン処理
     //opt: true->ログイン成功 false->ログイン失敗
@@ -65,7 +69,7 @@ export default function MyApp(){
     }
 
     //-----------------------------------------------------------------
-    //全画面でenterキーを使えないようにする(copy internet)
+    //全画面でenterキーを使えないようにする(copy from internet)
     document.onkeydown = function(event) {  
         var target, code, tag;  
         if (!event) {  
@@ -97,9 +101,10 @@ export default function MyApp(){
             <Router>
                 <div>
                     <ul className="myUl">
+                        {/* Navlinkをログインしているかどうかをチェックし、表示すべきものを表示する */}
                         <li>
                             {
-                                login ? t('sidebar.login') : <NavLink to="/" disabled>{t('sidebar.login')}</NavLink>
+                                login ? t('sidebar.login') : <NavLink exact to="/" disabled>{t('sidebar.login')}</NavLink>
                             }
                         </li>
                         <li>
