@@ -73,13 +73,13 @@ export default function Login(props){
                         cb(true)
                     }else{
                         //正常の場合、trueを返却する
-                        cb('存在してないＩＤです。')
+                        cb(t('login.user-error-noacc'))
                     }
                 })
             }else{
                 //TODO 异步检查的时候，暂时把必须入力的检查也写在这，是否可以同时使用同步检查，待调查
                 //エラーの場合、エラーメッセージを返却すると、エラーメッセージのカスタマイズはできる
-                cb('ユーザＩＤは必須入力です。')
+                cb(t('login.user-error-required'))
             }
         }, 500)
         //-------------------------------------------------------------------------------
@@ -99,21 +99,21 @@ export default function Login(props){
                             if(data.password == password){
                                 cb(true)
                             }else{
-                                cb('パスワード不正')
+                                cb(t('login.password-error-noright'))
                             }
                         }else{
                             //正常の場合、trueを返却する
-                            cb('パスワード不正（ユーザＩＤ不正）')
+                            cb(t('login.password-error-nouser'))
                         }
                     })
                 }else{
-                    cb('６桁英数字を入力してください。')
+                    cb(t('login.password-error-6char'))
                 }
                 
             }else{
                 //TODO 异步检查的时候，暂时把必须入力的检查也写在这，是否可以同时使用同步检查，待调查
                 //エラーの場合、エラーメッセージを返却すると、エラーメッセージのカスタマイズはできる
-                cb('パスワードは必須入力です。')
+                cb(t('login.password-error-required'))
             }
         }, 500)
         //-------------------------------------------------------------------------------

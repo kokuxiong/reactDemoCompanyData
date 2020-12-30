@@ -1,11 +1,21 @@
 {
+  "title": "社员管理系统",
+  "logout": "退出",
+  "lang-ch": "中文简体",
+  "lang-jp": "日本语",
   "login": {
     "title": "社员管理系统登录页面",
     "id": "用户ＩＤ",
     "id-placeholder": "请输入用户ＩＤ",
     "password": "用户密码",
     "password-placeholder": "请输入密码",
-    "login": "登录"
+    "login": "登录",
+    "user-error-required": "用户ＩＤ未输入",
+    "user-error-noacc": "用户ＩＤ不存在",
+    "password-error-required": "用户密码未输入",
+    "password-error-noright": "用户密码输入错误",
+    "password-error-nouser": "用户密码错误（用户ＩＤ不存在）",
+    "password-error-6char": "请输入6位英数字"
   },
   "register": {
     "title": "系统管理员注册页面",
@@ -13,12 +23,47 @@
     "id-placeholder": "请输入用户ＩＤ",
     "password": "新用户密码",
     "password-placeholder": "请输入密码",
-    "login": "注册"
+    "login": "注册",
+    "success1": "注册成功、还有",
+    "success2": "秒自动迁移到登陆页面"
   },
   "sidebar": {
     "login": "登录",
     "register": "注册",
     "empinfos": "社员一览",
     "create": "登录新社员"
+  },
+  "list": {
+    "title": "社员基本信息一览",
+    "search-label": "社员搜索",
+    "search-placeholder": "请输入要检索的姓名",
+    "search": "搜索",
+    "clear": "清空",
+    "create-user": "登陆新社员",
+    "thead": {
+      "id": "社员番号",
+      "name": "姓名",
+      "sex": "性别",
+      "birth": "生日",
+      "country": "国籍",
+      "action": "操作"
+    },
+    "action-update": "编辑",
+    "action-delete": "删除",
+    "delete-confirm1": "确定要删除「",
+    "delete-confirm2": "」这个社员吗"
+  },
+  "infomation": {
+    "title": "社员详细页面",
+    "cancel": "返回"
+  },
+  "register-update": {
+    "title": "社员基本信息登陆页面",
+    "enter": "确定",
+    "cancel": "返回",
+    "id-error-double": "用户ＩＤ已经存在",
+    "birth-error-required": "请输入生日",
+    "name-error-required": "请输入姓名",
+    "name-placeholder": "请输入姓名"
   }
 }

@@ -3,6 +3,7 @@ import { useHistory, useParams } from "react-router-dom"
 import { Button, Container, Form, FormGroup, Input, Label, Col } from 'reactstrap'
 import useCommon from '../hooks/useCommon'
 import { useForm, Controller } from 'react-hook-form'
+import { useTranslation, withTranslation, Trans } from 'react-i18next';
 
 /** TODO
  *      名前:中国語、日本語、英語のみ使えます。
@@ -28,6 +29,8 @@ export default function RegisterUpdate(props){
     const [countryCd, setCountryCd] = useState('001') //TODO check
     //hisitory
     const history = useHistory()
+
+    const { t, i18n } = useTranslation();
 
     //編集の場合、パスパラメータからcmpCdを取得
     let params = useParams()
@@ -131,10 +134,10 @@ export default function RegisterUpdate(props){
     return(
         <div style={{paddingLeft:400,paddingRight:300}}>
             <Container>
-                <h5>社員基本情報登録画面</h5><br/>
+                <h5>{t('register-update.title')}</h5><br/>
                 <Form onSubmit={handleSubmit(doUpdate)}>
                     <FormGroup>
-                        <Label for="cmpCd">社員番号</Label>
+                        <Label for="cmpCd">{t('list.thead.id')}</Label>
                         {/* React Hook Form优先采用非受控组件和原生的输入组件，第三方受控组件需要使用controller
                             controller的用法介绍请参照官网 */}
                         <Controller 
@@ -170,7 +173,7 @@ export default function RegisterUpdate(props){
                                     }
                                 }
                                 value={props.value}
-                                placeholder="６桁英数字を入力してください" 
+                                placeholder={t('login.id-placeholder')} 
                                 disabled={flag ? false : true}
                                 type='text'
                                 id='cmpCd'
@@ -178,13 +181,13 @@ export default function RegisterUpdate(props){
                             />)
                             }
                         />
-                        {errors.cmpCd?.type === "required" && <span style={{color:"red"}}>必須入力です。</span>}
-                        {errors.cmpCd?.type === "maxLength" && <span style={{color:"red"}}>６桁英数字を入力してください。</span>}
-                        {errors.cmpCd?.type === "minLength" && <span style={{color:"red"}}>６桁英数字を入力してください。</span>}
-                        {errors.cmpCd?.type === "asyncValidate" && <span style={{color:"red"}}>既存社員ＩＤです。</span>}
+                        {errors.cmpCd?.type === "required" && <span style={{color:"red"}}>{t('login.user-error-required')}</span>}
+                        {errors.cmpCd?.type === "maxLength" && <span style={{color:"red"}}>{t('login.password-error-6char')}</span>}
+                        {errors.cmpCd?.type === "minLength" && <span style={{color:"red"}}>{t('login.password-error-6char')}</span>}
+                        {errors.cmpCd?.type === "asyncValidate" && <span style={{color:"red"}}>{t('register-update.id-error-double')}</span>}
                     </FormGroup>
                     <FormGroup>
-                        <Label for="name">名前</Label>
+                        <Label for="name">{t('list.thead.name')}</Label>
                         <Controller 
                             control= {control}
                             name='name'
@@ -197,18 +200,18 @@ export default function RegisterUpdate(props){
                                     }
                                 }
                                 value={props.value}
-                                placeholder="名前を入力してください" 
+                                placeholder={t('register-update.name-placeholder')}
                                 name='name'
                                 type='text'
                                 id='name'
                             />)
                             }
                         />
-                        {errors.name?.type === "required" && <span style={{color:"red"}}>必須入力です。</span>}
+                        {errors.name?.type === "required" && <span style={{color:"red"}}>{t('register-update.name-error-required')}</span>}
                     </FormGroup>
                     <FormGroup check row>
                         {/* <Label for="">性別</Label> */}
-                        <legend className="col-form-label">性別</legend>
+                        <legend className="col-form-label">{t('list.thead.sex')}</legend>
                         <FormGroup check inline>
                             <Label check for="sexCd1">
                                 <Input type="radio" name="sexCd" value="01" id="sexCd1" 
@@ -224,7 +227,7 @@ export default function RegisterUpdate(props){
                     </FormGroup>
                     <br/>
                     <FormGroup>
-                        <Label for="birthday">生年月日</Label>
+                        <Label for="birthday">{t('list.thead.birth')}</Label>
                         {/* <Input type="date" name="birthday" id="birthday" value={birthday} 
                             onChange={updateBirthday} /> */}
                         <Controller 
@@ -245,10 +248,10 @@ export default function RegisterUpdate(props){
                             />)
                             }
                         />
-                        {errors.birthday?.type === "required" && <span style={{color:"red"}}>必須入力です。</span>}
+                        {errors.birthday?.type === "required" && <span style={{color:"red"}}>{t('register-update.birth-error-required')}</span>}
                     </FormGroup>
                     <FormGroup>
-                        <Label for="countryCd">国籍</Label>
+                        <Label for="countryCd">{t('list.thead.country')}</Label>
                         <Input type="select" name="countryCd" id="countryCd" value={countryCd} onChange={updateCountryCd}>
                             <option value="001">中国</option>
                             <option value="002">日本</option>
@@ -258,8 +261,8 @@ export default function RegisterUpdate(props){
                     <br/>
                     <FormGroup>
                         {/* <Button color="primary" onClick={doUpdate}>確定</Button> */}
-                        <Button color="primary" type="submit">確定</Button>
-                        <Button color="secondary" onClick={() => history.push('/list')} >戻る</Button>
+                        <Button color="primary" type="submit">{t('register-update.enter')}</Button>
+                        <Button color="secondary" onClick={() => history.push('/list')} >{t('register-update.cancel')}</Button>
                     </FormGroup>
                 </Form>
             </Container>

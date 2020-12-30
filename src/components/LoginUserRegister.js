@@ -118,7 +118,7 @@ export default function LoginUserRegister(props){
                     </Col>
                     <Col sm={4}>
                         <Alert color="danger" isOpen={visible} style={{height:38,paddingTop:5,paddingBottom:0,marginBottom:0}}>
-                            必須入力です。
+                            {t('login.user-error-required')}
                         </Alert>
                     </Col>
                 </FormGroup>
@@ -130,7 +130,7 @@ export default function LoginUserRegister(props){
                     </Col>
                     <Col sm={4}>
                         <Alert color="danger" isOpen={visible2} style={{height:38,paddingTop:5,paddingBottom:0,marginBottom:0}}>
-                            {visible2sub ? '６桁英数字を入力してください。' : '必須入力です。'}
+                            {visible2sub ? t('login.password-error-6char') : t('login.password-error-required')}
                         </Alert>
                     </Col>
                 </FormGroup> 
@@ -140,7 +140,7 @@ export default function LoginUserRegister(props){
                             ユーザＩＤは既に存在しています。
                         </Alert>
                         <Alert color="danger" isOpen={visible4} style={{width:350}}>
-                            {`新規登録成功、あと${time3}秒でログイン画面へ自動遷移します。`}
+                            {`${t('register.success1')}${time3}${t('register.success2')}`}
                         </Alert>
                     </Col>
                 </FormGroup> 

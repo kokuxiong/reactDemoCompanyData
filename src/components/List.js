@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button, ButtonGroup, Container, Table, NavLink, Form, FormGroup, Input, Label, Col, Badge  } from 'reactstrap'
 import { useHistory } from 'react-router-dom'
 import { getCountryName } from '../services/util'
+import { useTranslation, withTranslation, Trans } from 'react-i18next';
 
 /** TODO
  *      社員情報削除確認画面に遷移する　※社員情報削除確認画面基本設計がない？
@@ -16,6 +17,8 @@ export default function List(props){
     const history = useHistory()
     //すべての社員情報をpropsから取得
     let empinfos = props.emplist
+
+    const { t, i18n } = useTranslation();
 
     //検索バーで入力した内容を随時stateへ更新
     function updateTarget(e) { 
@@ -36,7 +39,7 @@ export default function List(props){
     //社員削除する処理
     function doDelete(empinfo) {
         //本当に削除するかをユーザへ確認する
-        let result = window.confirm(`本当に社員「${empinfo.name}」を削除してよろしいでしょうか`)
+        let result = window.confirm(`${t('list.delete-confirm1')}${empinfo.name}${t('list.delete-confirm2')}`)
         //はいを押下する場合、削除を実行、それ以外は削除しません。
         if(result){
             props.deleteEmpinfo(empinfo)
@@ -54,8 +57,8 @@ export default function List(props){
                 <td>{getCountryName(empinfo.countryCd)}</td>
                 <td>
                     <ButtonGroup>
-                        <Button size="sm" color="primary" onClick={() => history.push('/registerUpdate/' + empinfo.cmpCd)} >編集</Button>
-                        <Button size="sm" color="danger" onClick={() => doDelete(empinfo)}>削除</Button>
+                        <Button size="sm" color="primary" onClick={() => history.push('/registerUpdate/' + empinfo.cmpCd)} >{t('list.action-update')}</Button>
+                        <Button size="sm" color="danger" onClick={() => doDelete(empinfo)}>{t('list.action-delete')}</Button>
                         {/* <Button size="sm" color="danger" onClick={() => history.push('/delete/' + empinfo.cmpCd)}>削除</Button> */}
                     </ButtonGroup>
                 </td>
@@ -68,30 +71,30 @@ export default function List(props){
                 {/* <Container className="themed-container" fluid> */}
                 <Container>
                     <div className="float-right">
-                        <Button color="success" onClick={() => history.push('/registerUpdate/')}>新規社員登録</Button>
+                        <Button color="success" onClick={() => history.push('/registerUpdate/')}>{t('list.create-user')}</Button>
                     </div>
-                    <h3>社員基本情報一覧画面</h3><br/><br/>
+                    <h3>{t('list.title')}</h3><br/><br/>
                     <Form>
                         <FormGroup row>
-                            <Label for="cmpSearch" sm={2}>社員検索</Label>
+                            <Label for="cmpSearch" sm={2}>{t('list.search-label')}</Label>
                             <Col sm={4}>
                             <Input type="text" name="cmpSearch" id="cmpSearch" value={target} onChange={updateTarget}
-                                placeholder="名前を入力してください"/>
+                                placeholder={t('list.search-placeholder')}/>
                             </Col>
-                            <Button color="primary" sm={2} onClick={() => {props.doSearch(target)}} disabled={target.length > 0 ? false : true}>検索</Button>
-                            <Button color="secondary" sm={2} onClick={doClear} disabled={target.length > 0 ? false : true}>クリア</Button>
+                            <Button color="primary" sm={2} onClick={() => {props.doSearch(target)}} disabled={target.length > 0 ? false : true}>{t('list.search')}</Button>
+                            <Button color="secondary" sm={2} onClick={doClear} disabled={target.length > 0 ? false : true}>{t('list.clear')}</Button>
                         </FormGroup>
                     </Form>
                     {/* <Table striped className="mt-4"> */}
                     <Table dark className="mt-4">
                         <thead>
                             <tr>
-                                <th width="10%">社員番号</th>
-                                <th width="10%">名前</th>
-                                <th width="10%">性別</th>
-                                <th width="10%">生年月日</th>
-                                <th width="10%">国籍</th>
-                                <th width="10%">操作</th>
+                                <th width="10%">{t('list.thead.id')}</th>
+                                <th width="10%">{t('list.thead.name')}</th>
+                                <th width="10%">{t('list.thead.sex')}</th>
+                                <th width="10%">{t('list.thead.birth')}</th>
+                                <th width="10%">{t('list.thead.country')}</th>
+                                <th width="10%">{t('list.thead.action')}</th>
                             </tr>
                         </thead>
                         <tbody>

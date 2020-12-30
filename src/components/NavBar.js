@@ -11,20 +11,20 @@ export default function NavBar(props){
 
     return(
         <Navbar color="dark" dark expand="md" style={{height:50}}>
-            <NavbarBrand>社員管理システム</NavbarBrand>
+            <NavbarBrand>{t('title')}</NavbarBrand>
             {/* {props.login && */}
                 <Collapse navbar>
                     <Nav className="ml-auto" navbar>
                         <NavItem>
                             {props.login &&
-                                <NavLink onClick={() => props.doLogin(false)}>ログアウト</NavLink>
+                                <NavLink onClick={() => props.doLogin(false)}>{t('logout')}</NavLink>
                             }
                         </NavItem>
                         <NavItem>
-                            <NavLink onClick={() => changeLanguage('jp')}>日本語</NavLink>
+                            <NavLink onClick={() => changeLanguage('jp')}>{t('lang-jp')}</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink onClick={() => changeLanguage('ch')}>中文简体</NavLink>
+                            <NavLink onClick={() => changeLanguage('ch')}>{t('lang-ch')}</NavLink>
                         </NavItem>
                     </Nav>
                 </Collapse>

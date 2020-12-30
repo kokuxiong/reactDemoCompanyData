@@ -1,11 +1,21 @@
 {
+  "title": "社員管理システム",
+  "logout": "ログアウト",
+  "lang-ch": "中国語",
+  "lang-jp": "日本語",
   "login": {
     "title": "社員管理システムログイン画面",
     "id": "ユーザＩＤ",
     "id-placeholder": "ユーザＩＤを入力してください",
     "password": "パスワード",
     "password-placeholder": "パスワードを入力してください",
-    "login": "ログイン"
+    "login": "ログイン",
+    "user-error-required": "ユーザＩＤは必須入力です",
+    "user-error-noacc": "存在してないＩＤです",
+    "password-error-required": "パスワードは必須入力です",
+    "password-error-noright": "パスワード不正",
+    "password-error-nouser": "パスワード不正（ユーザＩＤ不正）",
+    "password-error-6char": "６桁英数字を入力してください"
   },
   "register": {
     "title": "ログインユーザ登録画面",
@@ -13,12 +23,47 @@
     "id-placeholder": "ユーザＩＤを入力してください",
     "password": "パスワード",
     "password-placeholder": "パスワードを入力してください",
-    "login": "登録"
+    "login": "登録",
+    "success1": "新規登録成功、あと",
+    "success2": "秒でログイン画面へ自動遷移します"
   },
   "sidebar": {
     "login": "ログイン",
     "register": "登録",
     "empinfos": "社員一覧",
     "create": "新規社員"
+  },
+  "list": {
+    "title": "社員基本情報一覧画面",
+    "search-label": "社員検索",
+    "search-placeholder": "名前を入力してください",
+    "search": "検索",
+    "clear": "クリア",
+    "create-user": "新規社員登録",
+    "thead": {
+      "id": "社员番号",
+      "name": "名前",
+      "sex": "性别",
+      "birth": "生年月日",
+      "country": "国籍",
+      "action": "操作"
+    },
+    "action-update": "編集",
+    "action-delete": "削除",
+    "delete-confirm1": "本当に社員「",
+    "delete-confirm2": "」を削除してよろしいでしょうか"
+  },
+  "infomation": {
+    "title": "社員画面",
+    "cancel": "戻る"
+  },
+  "register-update": {
+    "title": "社員基本情報登録画面",
+    "enter": "確定",
+    "cancel": "戻る",
+    "id-error-double": "既存社員ＩＤです",
+    "birth-error-required": "生年月日は必須入力です",
+    "name-error-required": "名前は必須入力です",
+    "name-placeholder": "名前を入力してください"
   }
 }
