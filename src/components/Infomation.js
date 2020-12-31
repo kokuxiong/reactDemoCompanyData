@@ -5,7 +5,7 @@ import useCommon from '../hooks/useCommon'
 import { getCountryName } from '../services/util'
 import { useTranslation } from 'react-i18next';
 
-export default function Infomation(){
+export default function Infomation(props){
 
     //画面表示項目
     const [cmpCdInput, setCmpCdInput] = useState('')
@@ -24,6 +24,8 @@ export default function Infomation(){
 
     //初期化処理
     useEffect(() => {
+        //ログインステータスチェック
+        props.loginStatusCheck()
         //当該社員情報をＤＢから検索し、画面へ表示する
         if(cmpCd){
             findEmpByCmpCd(cmpCd, (data) => {

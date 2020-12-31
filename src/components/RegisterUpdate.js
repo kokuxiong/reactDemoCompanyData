@@ -55,6 +55,9 @@ export default function RegisterUpdate(props){
 
     //初期化処理
     useEffect(() => {
+        //ログインステータスチェック
+        props.loginStatusCheck()
+        //すべての国籍を検索
         findAllCountry((data) => {
             setCountries(data)
         })

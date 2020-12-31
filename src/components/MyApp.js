@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import {BrowserRouter as Router, Switch, Route, Redirect, NavLink} from 'react-router-dom'
 import NavBar from './NavBar'
 import List from './List'
@@ -17,20 +17,65 @@ import { useTranslation } from 'react-i18next';
 export default function MyApp(){
 
     //ログインステータスＳｔａｔｅ
-    const [login, setLogin] = useState(false)
+    const [login, setLogin] = useState(true)
     //社員情報関連
     const { emplist, setEmplist, findAllEmp, insertEmp, updateEmp, deleteEmp } = useCommon()
     //i18n処理
     const { t } = useTranslation();
+
+    // alert(window.location.pathname)
+    // alert(document.referrer)
+
+    useEffect(() => {
+        //ログインステータスチェック、1分後自動ログアウトにする、1分以内はログイン済にする
+        loginStatusCheck()
+    },[])
 
     //ログイン処理
     //opt: true->ログイン成功 false->ログイン失敗
     function doLogin(opt, callback){
         //ログイン状況をＳｔａｔｅへ反映
         setLogin(opt)
+        //ログイン成功の場合、セッションに保持
+        if(opt){
+            let tempObj = {}
+            tempObj.status = '1'　//1:ログイン済
+            tempObj.datetime = new Date().getTime() //ログイン時間、何分後自動ログアウトにするため
+            sessionStorage.setItem('login', JSON.stringify(tempObj)) 
+        }else{
+            //logout処理、セッションからログインステータス削除する
+            if(sessionStorage.hasOwnProperty('login')){
+                sessionStorage.removeItem('login')
+            }
+        }
         //ログイン成功、かつcallback関数ある場合、callback関数をよびだす。
         if(opt && callback){
             callback()
+        }
+    }
+
+    //ログインステータスをチェックする
+    //１分後、自動ログアウトにする　※暫定的に１分にしている
+    function loginStatusCheck() {
+        let tempObj = sessionStorage.getItem('login')
+        if(tempObj){
+            tempObj = JSON.parse(tempObj)
+            let status = tempObj.status
+            let datetime = tempObj.datetime
+            if(status === '1'){
+                // console.log(new Date().getTime() - datetime)
+                let tempDatetime = new Date().getTime() - datetime
+                let tempFlag = 1 * 60 * 1000 //何分後自動ログアウトにするのはここで設定
+                if(tempDatetime > tempFlag){
+                    setLogin(false)
+                }else{
+                    setLogin(true)
+                }
+            }else{
+                setLogin(false)
+            }
+        }else{
+            setLogin(false)
         }
     }
 
@@ -127,21 +172,21 @@ export default function MyApp(){
                             <Route exact path="/"><Login doLogin={doLogin}/></Route>
                             <Route exact path="/loginuserRegister"><LoginUserRegister /></Route>
                             <Route path="/list">
-                                {login ? <List doSearch={doSearch} emplist={emplist} deleteEmpinfo={deleteEmpinfo}/> : (
+                                {login ? <List loginStatusCheck={loginStatusCheck} doSearch={doSearch} emplist={emplist} deleteEmpinfo={deleteEmpinfo}/> : (
                                     <Redirect to={{
                                         pathname: "/"
                                     }} /> 
                                 )} 
                             </Route>
                             <Route path="/infomation/:cmpCd">
-                                {login ? <Infomation/> : (
+                                {login ? <Infomation loginStatusCheck={loginStatusCheck} /> : (
                                     <Redirect to={{
                                         pathname: "/"
                                     }} /> 
                                 )}
                             </Route>
                             <Route path="/registerUpdate/:cmpCd?">
-                                {login ? <RegisterUpdate insertEmpinfo={insertEmpinfo} updateEmpinfo={updateEmpinfo}/> : (
+                                {login ? <RegisterUpdate loginStatusCheck={loginStatusCheck} insertEmpinfo={insertEmpinfo} updateEmpinfo={updateEmpinfo}/> : (
                                     <Redirect to={{
                                         pathname: "/"
                                     }} /> 

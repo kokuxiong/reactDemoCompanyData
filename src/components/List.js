@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, ButtonGroup, Container, Table, NavLink, Form, FormGroup, Input, Label, Col, Badge  } from 'reactstrap'
 import { useHistory } from 'react-router-dom'
 import { getCountryName } from '../services/util'
@@ -14,6 +14,11 @@ export default function List(props){
     let empinfos = props.emplist
     //i18n処理
     const { t } = useTranslation();
+
+    useEffect(() => {
+        //ログインステータスチェック
+        props.loginStatusCheck()
+    },[])
 
     //検索バーで入力した内容を随時stateへ更新
     function updateTarget(e) { 
