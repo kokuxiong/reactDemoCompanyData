@@ -140,6 +140,7 @@ export default function MyApp(){
     //-----------------------------------------------------------------
     //-----------------------------------------------------------------
 
+    //是否登陆判断的重定向，可以包装到一个组件，大概类似 login ? componet.children : <Redirect to="/xxx" />
     return(
         <div className="myApp" style={{ backgroundImage: `url(${Background})` }}>
             <NavBar doLogin={doLogin} login={login}/>

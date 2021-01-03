@@ -12,6 +12,10 @@ import { findAllCountry } from '../services/countryDAO'
  *      国籍:必須選択のこと エラーメッセージ出す(画面に未入力は不可能のため、一旦放置　※普通は)
  *      データベースの操作が失敗する場合は、画面に「ＳＱＬ実行例外が発生しました。」のメッセージを表示する。
  *      ※普通は失敗することはないので、一旦放置
+ * 
+ *  使用react hook form的时候可以不用state，直接用onSubmit方法中的data来获取到用户的输入信息，
+ *  目前代码还是用的state
+ *  <form onSubmit={handleSubmit(data => console.log(data))}> 左边代码的data里包含了用户的输入
  */
 
 export default function RegisterUpdate(props){
